@@ -46,7 +46,15 @@ export default function SkillQuiz() {
           </h1>
 
           <button
-            onClick={() => window.location.reload()}
+          onClick={() => {
+  setStep(0);
+  setScores({
+    developer: 0,
+    analyst: 0,
+    designer: 0,
+    manager: 0,
+  });
+}}
             className="bg-purple-500 text-white px-6 py-2 rounded-lg"
           >
             Retry
