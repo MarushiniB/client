@@ -143,12 +143,12 @@ export default function ResumeUpload() {
                   Based on your skills, you can explore this role.
                 </p>
 
-                <button
+                {/* <button
                   className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-lg hover:opacity-90"
                   onClick={() => window.location.href = "/roadmap"}
                 >
                   View Roadmap →
-                </button>
+                </button> */}
               </div>
             ))}
 
