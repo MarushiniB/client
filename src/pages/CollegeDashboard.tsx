@@ -5,7 +5,7 @@ import {
   TrendingUp,
   BookOpen,
   Award,
-  BarChart3,
+  // BarChart3,
   Target,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
