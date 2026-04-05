@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import { colleges } from "../data/colleges";
 
 export default function Colleges() {
   const [stream, setStream] = useState("all");
   const [region, setRegion] = useState("all");
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [selectedCollege, setSelectedCollege] = useState<any>(null);
 
   const filtered = colleges.filter((c) => {
