@@ -53,8 +53,8 @@ export default function CollegeDashboard() {
         {[
           { label: "Skills", value: skills.length, icon: <Award />, key: "skills" },
           { label: "Interests", value: interests.length, icon: <Target />, key: "interests" },
-          { label: "Jobs Applied", value: "5", icon: <TrendingUp />, key: "jobs" },
-          { label: "Progress", value: "65%", icon: <BarChart3 />, key: "progress" },
+          // { label: "Jobs Applied", value: "5", icon: <TrendingUp />, key: "jobs" },
+          // { label: "Progress", value: "65%", icon: <BarChart3 />, key: "progress" },
         ].map((stat, i) => (
           <motion.div
             key={i}
