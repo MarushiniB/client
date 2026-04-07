@@ -9,6 +9,40 @@ type Scores = {
   manager: number;
 };
 
+type Role = {
+  name: string;
+  requiredSkills: string[];
+  relatedInterests: string[];
+};
+
+const roles: Role[] = [
+  {
+    name: "MERN Developer",
+    requiredSkills: ["JavaScript", "React", "Node.js", "HTML", "CSS", "MongoDB"],
+    relatedInterests: ["Web Development", "App Development"],
+  },
+  {
+    name: "Data Scientist",
+    requiredSkills: ["Python", "SQL", "Machine Learning", "Deep Learning"],
+    relatedInterests: ["Data Science", "Artificial Intelligence"],
+  },
+  {
+    name: "UI/UX Designer",
+    requiredSkills: ["Figma", "UI Design", "UX Research", "Photoshop"],
+    relatedInterests: ["Design", "Gaming"],
+  },
+  {
+    name: "Healthcare Analyst",
+    requiredSkills: ["Python", "SQL", "Data Analysis"],
+    relatedInterests: ["Healthcare", "Data Science"],
+  },
+  {
+    name: "Product Manager",
+    requiredSkills: ["Leadership", "Communication", "Critical Thinking"],
+    relatedInterests: ["Business", "Startups", "Marketing"],
+  },
+];
+
 const questions = [
   { q: "Do you enjoy coding?", type: "developer" },
   { q: "Do you like solving logical problems?", type: "developer" },
@@ -26,7 +60,7 @@ const skillOptions = [
   "Deep Learning", "UI Design", "UX Research", "Figma",
   "Photoshop", "Communication", "Leadership", "Teamwork",
   "Problem Solving", "Critical Thinking", "Cloud Computing",
-  "AWS", "Docker"
+  "AWS", "Docker",
 ];
 
 const interestOptions = [
@@ -34,22 +68,19 @@ const interestOptions = [
   "Cyber Security", "Blockchain", "Data Science",
   "Business", "Finance", "Marketing",
   "Healthcare", "Design", "Gaming",
-  "Entrepreneurship", "Startups", "Robotics"
+  "Entrepreneurship", "Startups", "Robotics",
 ];
 
 export default function SkillQuiz() {
   const navigate = useNavigate();
 
   const [step, setStep] = useState(0);
-  const [result, setResult] = useState("");
-
   const [scores, setScores] = useState<Scores>({
     developer: 0,
     analyst: 0,
     designer: 0,
     manager: 0,
   });
-
   const [skills, setSkills] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState("");
@@ -60,10 +91,6 @@ export default function SkillQuiz() {
     setStep(step + 1);
   };
 
-  const getResult = () => {
-    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
-  };
-
   const toggleItem = (item: string, list: string[], setList: any) => {
     if (list.includes(item)) {
       setList(list.filter((i) => i !== item));
@@ -72,30 +99,34 @@ export default function SkillQuiz() {
     }
   };
 
+  const getRoleMatches = (skills: string[], interests: string[]) => {
+    return roles
+      .map((role) => {
+        const matchedSkills = role.requiredSkills.filter((s) => skills.includes(s));
+        const matchedInterests = role.relatedInterests.filter((i) => interests.includes(i));
+        const missingSkills = role.requiredSkills.filter((s) => !skills.includes(s));
+        return { role: role.name, matchedSkills, matchedInterests, missingSkills };
+      })
+      .sort(
+        (a, b) =>
+          b.matchedSkills.length +
+          b.matchedInterests.length -
+          (a.matchedSkills.length + a.matchedInterests.length)
+      );
+  };
+
   // SAVE DATA
   useEffect(() => {
     if (step > questions.length) {
-      const res = getResult();
-      setResult(res);
-
       const saveData = async () => {
         try {
-          await API.put("/auth/profile", {
-            skills,
-            interests,
-          });
-
+          await API.put("/auth/profile", { skills, interests });
           const oldUser = JSON.parse(localStorage.getItem("user") || "{}");
-
-          localStorage.setItem(
-            "user",
-            JSON.stringify({ ...oldUser, skills, interests })
-          );
+          localStorage.setItem("user", JSON.stringify({ ...oldUser, skills, interests }));
         } catch (err) {
           console.error(err);
         }
       };
-
       saveData();
     }
   }, [step]);
@@ -105,15 +136,10 @@ export default function SkillQuiz() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-blue-200">
         <div className="bg-white p-8 rounded-3xl shadow-xl w-full max-w-xl">
-
           <p className="text-sm text-gray-500 mb-2">
             Question {step + 1} / {questions.length}
           </p>
-
-          <h1 className="text-2xl font-bold mb-6">
-            {questions[step].q}
-          </h1>
-
+          <h1 className="text-2xl font-bold mb-6">{questions[step].q}</h1>
           <div className="space-y-4">
             <button
               onClick={() => handleAnswer(questions[step].type as keyof Scores)}
@@ -121,7 +147,6 @@ export default function SkillQuiz() {
             >
               Yes
             </button>
-
             <button
               onClick={() => setStep(step + 1)}
               className="w-full p-4 bg-gray-200 rounded-xl"
@@ -139,10 +164,7 @@ export default function SkillQuiz() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-6">
         <div className="bg-white p-8 rounded-3xl shadow-xl max-w-2xl w-full space-y-6">
-
-          <h1 className="text-2xl font-bold text-center">
-            🎯 Select Skills & Interests
-          </h1>
+          <h1 className="text-2xl font-bold text-center">🎯 Select Skills & Interests</h1>
 
           {/* SKILLS */}
           <div>
@@ -152,21 +174,26 @@ export default function SkillQuiz() {
                 <button
                   key={s}
                   onClick={() => toggleItem(s, skills, setSkills)}
-                  className={`px-3 py-1 rounded-full ${
+                  className={`px-3 py-1 rounded-full transition ${
                     skills.includes(s)
-                      ? "bg-purple-500 text-white"
-                      : "bg-gray-200"
+                      ? "bg-purple-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-purple-300"
                   }`}
                 >
                   {s}
                 </button>
               ))}
             </div>
-
             <input
               value={customSkill}
               onChange={(e) => setCustomSkill(e.target.value)}
-              placeholder="Add custom skill"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && customSkill.trim()) {
+                  toggleItem(customSkill.trim(), skills, setSkills);
+                  setCustomSkill("");
+                }
+              }}
+              placeholder="Add custom skill and press Enter"
               className="mt-2 w-full p-2 border rounded"
             />
           </div>
@@ -175,32 +202,37 @@ export default function SkillQuiz() {
           <div>
             <h2 className="font-semibold mb-2">🎯 Interests</h2>
             <div className="flex flex-wrap gap-2">
-              {interestOptions.map((s) => (
+              {interestOptions.map((i) => (
                 <button
-                  key={s}
-                  onClick={() => toggleItem(s, interests, setInterests)}
-                  className={`px-3 py-1 rounded-full ${
-                    interests.includes(s)
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-200"
+                  key={i}
+                  onClick={() => toggleItem(i, interests, setInterests)}
+                  className={`px-3 py-1 rounded-full transition ${
+                    interests.includes(i)
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-200 text-gray-700 hover:bg-blue-300"
                   }`}
                 >
-                  {s}
+                  {i}
                 </button>
               ))}
             </div>
-
             <input
               value={customInterest}
               onChange={(e) => setCustomInterest(e.target.value)}
-              placeholder="Add custom interest"
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && customInterest.trim()) {
+                  toggleItem(customInterest.trim(), interests, setInterests);
+                  setCustomInterest("");
+                }
+              }}
+              placeholder="Add custom interest and press Enter"
               className="mt-2 w-full p-2 border rounded"
             />
           </div>
 
           <button
             onClick={() => setStep(step + 1)}
-            className="w-full bg-purple-600 text-white py-3 rounded-lg"
+            className="w-full bg-purple-600 text-white py-3 rounded-lg mt-4"
           >
             Finish 🚀
           </button>
@@ -210,47 +242,40 @@ export default function SkillQuiz() {
   }
 
   // RESULT PAGE
+  const roleMatches = getRoleMatches(skills, interests);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-blue-100 p-6">
-
       <div className="max-w-6xl mx-auto space-y-8">
-
         <div className="bg-white p-10 rounded-3xl shadow-xl text-center">
-          <h1 className="text-4xl font-bold mb-3">
-            🎯 Your Career Result
-          </h1>
-
-          <span className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-2xl capitalize">
-            {result}
-          </span>
+          <h1 className="text-4xl font-bold mb-3">🎯 Career Recommendations</h1>
+          <p className="text-gray-700">
+            Based on your skills and interests, these roles might suit you:
+          </p>
         </div>
 
-        {/* SKILLS + INTERESTS */}
+        {/* ROLES */}
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-3xl shadow">
-            <h2 className="font-semibold mb-3">🛠 Skills</h2>
-            <div className="flex flex-wrap gap-2">
-              {skills.map((s, i) => (
-                <span key={i} className="bg-blue-100 px-3 py-1 rounded-full">
-                  {s}
-                </span>
-              ))}
+          {roleMatches.map((r, i) => (
+            <div key={i} className="bg-white p-6 rounded-3xl shadow">
+              <h2 className="font-bold text-xl mb-2">{r.role}</h2>
+              <p>✅ Skills matched: {r.matchedSkills.join(", ") || "None"}</p>
+              <p>🎯 Interests matched: {r.matchedInterests.join(", ") || "None"}</p>
+              {r.missingSkills.length > 0 && (
+                <p className="text-red-500 mt-1">
+                  ⚠ Missing skills: {r.missingSkills.join(", ")}
+                </p>
+              )}
+              {r.matchedInterests.length === 0 && (
+                <p className="text-yellow-600 mt-1">
+                  💡 You could try this role if you are interested in {roles.find(role => role.name === r.role)?.relatedInterests.join(", ")}
+                </p>
+              )}
             </div>
-          </div>
-
-          <div className="bg-white p-6 rounded-3xl shadow">
-            <h2 className="font-semibold mb-3">🎯 Interests</h2>
-            <div className="flex flex-wrap gap-2">
-              {interests.map((s, i) => (
-                <span key={i} className="bg-green-100 px-3 py-1 rounded-full">
-                  {s}
-                </span>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
 
-        {/* ROADMAP BUTTON */}
+        {/* BACK TO ROADMAP BUTTON */}
         <div className="text-center">
           <button
             onClick={() => navigate("/roadmap")}
@@ -259,7 +284,6 @@ export default function SkillQuiz() {
             🚀 View Roadmap
           </button>
         </div>
-
       </div>
     </div>
   );
