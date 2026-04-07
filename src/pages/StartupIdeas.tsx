@@ -5,35 +5,96 @@ import { Lightbulb, Rocket, Landmark, Trophy } from "lucide-react";
 export default function StartupIdeas() {
   const [popupContent, setPopupContent] = useState<string | null>(null);
 
+  // ✅ STARTUP IDEAS
   const ideas = [
-    "EdTech App",
-    "AgriTech Platform",
-    "Local Job Portal",
-    "Healthcare App",
-    "AI Chatbot",
-    "E-commerce Solution",
-    "Travel Planner",
+    {
+      name: "EdTech App",
+      desc: "A platform to improve learning experiences using interactive lessons, quizzes, and AI-powered suggestions for students. Can target schools, colleges, or online learners."
+    },
+    {
+      name: "AgriTech Platform",
+      desc: "Technology to support farmers with crop insights, weather data, and marketplaces for selling produce directly to buyers."
+    },
+    {
+      name: "Local Job Portal",
+      desc: "A platform connecting job seekers to local employers with curated opportunities and skill-based matching."
+    },
+    {
+      name: "Healthcare App",
+      desc: "A solution for telemedicine, appointment booking, patient records, and health tracking, targeting clinics and patients."
+    },
+    {
+      name: "AI Chatbot",
+      desc: "An intelligent assistant for businesses to automate customer support and improve engagement using AI and NLP."
+    },
+    {
+      name: "E-commerce Solution",
+      desc: "A platform to help small businesses sell products online with features like inventory management, payments, and delivery tracking."
+    },
+    {
+      name: "Travel Planner",
+      desc: "An app to plan trips, manage bookings, suggest itineraries, and provide travel recommendations based on preferences."
+    }
   ];
 
+  // ✅ STEPS TO STARTUP
   const steps = [
-    "💡 Find a problem to solve",
-    "🔍 Validate your idea (ask people)",
-    "🛠 Build MVP (basic version)",
-    "📈 Launch & improve",
-    "💰 Get funding / scale",
+    {
+      name: "Find a problem to solve",
+      desc: "Identify real-world problems you are passionate about. Observe your surroundings, talk to people, and understand pain points."
+    },
+    {
+      name: "Validate your idea",
+      desc: "Test your idea with potential users. Collect feedback, surveys, and conduct small experiments to ensure demand."
+    },
+    {
+      name: "Build MVP",
+      desc: "Create a minimum viable product to showcase the core functionality. Focus on essential features to launch quickly."
+    },
+    {
+      name: "Launch & improve",
+      desc: "Release your MVP to a small audience, monitor usage, gather feedback, and iterate to improve the product."
+    },
+    {
+      name: "Get funding / scale",
+      desc: "Once your product gains traction, seek funding from investors or accelerators to scale operations."
+    }
   ];
 
+  // ✅ GOVERNMENT SCHEMES
   const schemes = [
-    "Startup India",
-    "MSME Registration",
-    "Mudra Loan",
-    "Atal Innovation Mission",
+    {
+      name: "Startup India",
+      desc: "A government initiative to promote startups through easier compliance, funding support, and mentorship programs."
+    },
+    {
+      name: "MSME Registration",
+      desc: "Enables small businesses to gain formal recognition, access financial benefits, and avail schemes for growth."
+    },
+    {
+      name: "Mudra Loan",
+      desc: "Government-backed loans for startups and small businesses without requiring collateral, supporting initial operations."
+    },
+    {
+      name: "Atal Innovation Mission",
+      desc: "Encourages innovation and entrepreneurship through incubators, accelerators, and funding programs."
+    }
   ];
 
+  // ✅ HACKATHONS
   const hackathons = [
-    "Smart India Hackathon",
-    "College Hackathons",
-    "Online Coding Challenges",
+    {
+      name: "Smart India Hackathon",
+      desc: "A nationwide initiative to provide students with a platform to solve real-life problems using technology."
+    },
+    {
+      name: "College Hackathons",
+      desc: "Organized by colleges or clubs to encourage creativity, teamwork, and solving practical coding challenges."
+    },
+    {
+      name: "Online Coding Challenges",
+      desc: "Participate in online competitions to improve coding skills, problem-solving, and gain recognition in tech communities."
+    }
   ];
 
   const openPopup = (title: string, content: string) => {
@@ -62,9 +123,9 @@ export default function StartupIdeas() {
               key={i}
               whileHover={{ scale: 1.05 }}
               className="p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl shadow-lg cursor-pointer"
-              onClick={() => openPopup("Startup Idea", idea)}
+              onClick={() => openPopup(idea.name, idea.desc)}
             >
-              {idea}
+              {idea.name}
             </motion.div>
           ))}
         </div>
@@ -80,9 +141,9 @@ export default function StartupIdeas() {
             <li
               key={i}
               className="cursor-pointer hover:bg-gray-100 p-2 rounded"
-              onClick={() => openPopup("Step to Start", step)}
+              onClick={() => openPopup(step.name, step.desc)}
             >
-              {step}
+              {step.name}
             </li>
           ))}
         </ul>
@@ -103,7 +164,7 @@ export default function StartupIdeas() {
           <p
             key={i}
             className="cursor-pointer hover:bg-gray-100 p-2 rounded text-gray-600"
-            onClick={() => openPopup("Important Tip", item)}
+            onClick={() => openPopup("Tip", item)}
           >
             ✔ {item}
           </p>
@@ -120,9 +181,9 @@ export default function StartupIdeas() {
             <div
               key={i}
               className="p-4 border rounded-xl hover:bg-purple-50 cursor-pointer transition"
-              onClick={() => openPopup("Govt Scheme", s)}
+              onClick={() => openPopup(s.name, s.desc)}
             >
-              {s}
+              {s.name}
             </div>
           ))}
         </div>
@@ -138,9 +199,9 @@ export default function StartupIdeas() {
             <li
               key={i}
               className="cursor-pointer hover:bg-gray-100 p-2 rounded"
-              onClick={() => openPopup("Hackathon", h)}
+              onClick={() => openPopup(h.name, h.desc)}
             >
-              🔥 {h}
+              🔥 {h.name}
             </li>
           ))}
         </ul>
@@ -156,7 +217,7 @@ export default function StartupIdeas() {
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
-            className="bg-white p-8 rounded-3xl shadow-xl max-w-lg w-full overflow-auto"
+            className="bg-white p-8 rounded-3xl shadow-xl max-w-3xl w-full max-h-[80vh] overflow-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="text-2xl font-bold mb-4">Details</h2>
