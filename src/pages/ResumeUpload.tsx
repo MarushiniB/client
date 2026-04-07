@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+type JobMap = Record<string, string[]>;
+
 export default function ResumeUpload() {
   const [skills, setSkills] = useState<string[]>([]);
   const [fileName, setFileName] = useState("");
@@ -20,24 +22,24 @@ export default function ResumeUpload() {
     "mongodb",
   ];
 
-  // 🎯 JOB MAPPING
-  const jobMap: any = {
-    "python": ["Data Analyst", "ML Engineer"],
+  const jobMap: JobMap = {
+    python: ["Data Analyst", "ML Engineer"],
     "machine learning": ["ML Engineer", "AI Engineer"],
-    "react": ["Frontend Developer"],
-    "node": ["Backend Developer"],
-    "javascript": ["Frontend Developer"],
-    "sql": ["Data Analyst"],
-    "excel": ["Business Analyst"],
+    react: ["Frontend Developer"],
+    node: ["Backend Developer"],
+    javascript: ["Frontend Developer"],
+    sql: ["Data Analyst"],
+    excel: ["Business Analyst"],
     "data analysis": ["Data Analyst"],
-    "java": ["Backend Developer"],
+    java: ["Backend Developer"],
+    "c++": ["Backend Developer"],
+    html: ["Frontend Developer"],
+    css: ["Frontend Developer"],
+    mongodb: ["Backend Developer"],
   };
 
   const extractSkills = (text: string) => {
-    const found = keywords.filter((k) =>
-      text.toLowerCase().includes(k)
-    );
-
+    const found = keywords.filter((k) => text.toLowerCase().includes(k));
     setSkills(found);
   };
 
@@ -47,16 +49,11 @@ export default function ResumeUpload() {
     extractSkills(text);
   };
 
-  // 🎯 GENERATE JOBS
   const getJobs = () => {
     const jobs = new Set<string>();
-
     skills.forEach((skill) => {
-      if (jobMap[skill]) {
-        jobMap[skill].forEach((job: string) => jobs.add(job));
-      }
+      jobMap[skill]?.forEach((job) => jobs.add(job));
     });
-
     return Array.from(jobs);
   };
 
@@ -65,49 +62,30 @@ export default function ResumeUpload() {
   return (
     <div className="space-y-10">
 
-      {/* 🔥 HERO */}
+      {/* HERO */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-700 text-white p-8 rounded-3xl shadow-lg">
-        <h1 className="text-3xl font-bold mb-2">
-          Resume Analyzer 🚀
-        </h1>
-        <p className="text-blue-100">
-          Upload your resume and discover your career path instantly
-        </p>
+        <h1 className="text-3xl font-bold mb-2">Resume Analyzer 🚀</h1>
+        <p className="text-blue-100">Upload your resume and discover your career path instantly</p>
       </div>
 
-      {/* 📄 UPLOAD CARD */}
+      {/* UPLOAD CARD */}
       <div className="bg-white p-8 rounded-3xl shadow-lg border border-gray-100 text-center">
-
-        <div className="border-2 border-dashed border-gray-300 rounded-xl p-10 hover:border-blue-500 transition">
-
-          <p className="text-gray-500 mb-3">
-            Drag & drop your resume or click to upload
-          </p>
-
+        <label className="block border-2 border-dashed border-gray-300 rounded-xl p-10 cursor-pointer hover:border-blue-500 transition">
+          <p className="text-gray-500 mb-3">Drag & drop your resume or click to upload</p>
           <input
             type="file"
             accept=".txt"
-            onChange={(e) =>
-              handleFile(e.target.files?.[0] as File)
-            }
-            className="mx-auto"
+            onChange={(e) => handleFile(e.target.files?.[0] as File)}
+            className="hidden"
           />
-
-          {fileName && (
-            <p className="mt-4 text-sm text-gray-600">
-              📄 {fileName}
-            </p>
-          )}
-        </div>
+          {fileName && <p className="mt-4 text-sm text-gray-600">📄 {fileName}</p>}
+        </label>
       </div>
 
-      {/* 🧠 SKILLS */}
+      {/* DETECTED SKILLS */}
       {skills.length > 0 && (
         <div className="bg-white p-6 rounded-3xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">
-            Detected Skills 🧠
-          </h2>
-
+          <h2 className="text-xl font-semibold mb-4">Detected Skills 🧠</h2>
           <div className="flex flex-wrap gap-3">
             {skills.map((s, i) => (
               <span
@@ -121,48 +99,32 @@ export default function ResumeUpload() {
         </div>
       )}
 
-      {/* 💼 JOB SUGGESTIONS */}
+      {/* JOB SUGGESTIONS */}
       {jobs.length > 0 && (
         <div className="bg-white p-6 rounded-3xl shadow-lg">
-          <h2 className="text-xl font-semibold mb-6">
-            Recommended Career Paths 💼
-          </h2>
-
+          <h2 className="text-xl font-semibold mb-6">Recommended Career Paths 💼</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-
             {jobs.map((job, i) => (
               <div
                 key={i}
-                className="p-5 rounded-2xl border hover:shadow-xl transition bg-gradient-to-br from-gray-50 to-white"
+                className="p-5 rounded-2xl border hover:shadow-xl transition bg-gradient-to-br from-gray-50 to-white cursor-pointer hover:from-blue-50 hover:to-purple-50"
               >
-                <h3 className="text-lg font-semibold mb-2">
-                  {job}
-                </h3>
-
+                <h3 className="text-lg font-semibold mb-2">{job}</h3>
                 <p className="text-gray-500 text-sm mb-4">
                   Based on your skills, you can explore this role.
                 </p>
-
-                {/* <button
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white py-2 rounded-lg hover:opacity-90"
-                  onClick={() => window.location.href = "/roadmap"}
-                >
-                  View Roadmap →
-                </button> */}
               </div>
             ))}
-
           </div>
         </div>
       )}
 
-      {/* ❌ EMPTY */}
+      {/* NO SKILLS FOUND */}
       {fileName && skills.length === 0 && (
         <div className="text-center text-gray-500">
           No skills detected 😕 Try a better resume
         </div>
       )}
-
     </div>
   );
 }
