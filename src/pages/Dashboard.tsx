@@ -36,7 +36,8 @@ export default function Dashboard() {
     if (title === "Find Colleges") navigate("/colleges");
     if (title === "Upload Resume") navigate("/resume");
     if (title === "Skill Analysis") navigate("/skill-quiz");
-    if (title === "Find Jobs") navigate("/jobs");
+    if (title === "Roadmap") navigate("/roadmap");
+    
     if (title === "Startup Ideas") navigate("/startup");
   };
 
