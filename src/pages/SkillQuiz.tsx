@@ -16,6 +16,7 @@ type Role = {
 };
 
 const roles: Role[] = [
+  // Computer / Tech
   {
     name: "MERN Developer",
     requiredSkills: ["JavaScript", "React", "Node.js", "HTML", "CSS", "MongoDB"],
@@ -32,14 +33,73 @@ const roles: Role[] = [
     relatedInterests: ["Design", "Gaming"],
   },
   {
+    name: "Cloud Engineer",
+    requiredSkills: ["AWS", "Docker", "Cloud Computing", "Node.js"],
+    relatedInterests: ["Cloud Computing", "Web Development"],
+  },
+  // Medicine / Healthcare
+  {
     name: "Healthcare Analyst",
     requiredSkills: ["Python", "SQL", "Data Analysis"],
     relatedInterests: ["Healthcare", "Data Science"],
   },
   {
-    name: "Product Manager",
-    requiredSkills: ["Leadership", "Communication", "Critical Thinking"],
-    relatedInterests: ["Business", "Startups", "Marketing"],
+    name: "Medical Researcher",
+    requiredSkills: ["Research", "Data Analysis", "Critical Thinking"],
+    relatedInterests: ["Healthcare", "Biology", "Medicine"],
+  },
+  {
+    name: "Pharmacist",
+    requiredSkills: ["Chemistry", "Healthcare", "Critical Thinking"],
+    relatedInterests: ["Healthcare", "Medicine"],
+  },
+  // Arts / Design
+  {
+    name: "Graphic Designer",
+    requiredSkills: ["Photoshop", "Illustrator", "Creativity"],
+    relatedInterests: ["Design", "Arts", "Gaming"],
+  },
+  {
+    name: "Animator",
+    requiredSkills: ["Animation", "Creativity", "Figma", "Photoshop"],
+    relatedInterests: ["Design", "Arts", "Entertainment"],
+  },
+  {
+    name: "Writer / Author",
+    requiredSkills: ["Writing", "Creativity", "Communication"],
+    relatedInterests: ["Arts", "Literature", "Entertainment"],
+  },
+  // Commerce / Business / Law
+  {
+    name: "Business Analyst",
+    requiredSkills: ["SQL", "Excel", "Critical Thinking", "Communication"],
+    relatedInterests: ["Business", "Finance", "Startups"],
+  },
+  {
+    name: "Marketing Specialist",
+    requiredSkills: ["Communication", "Creativity", "Data Analysis"],
+    relatedInterests: ["Marketing", "Business", "Commerce"],
+  },
+  {
+    name: "Lawyer",
+    requiredSkills: ["Critical Thinking", "Communication", "Research"],
+    relatedInterests: ["Law", "Commerce", "Ethics"],
+  },
+  // Research / Science
+  {
+    name: "Research Scientist",
+    requiredSkills: ["Research", "Critical Thinking", "Data Analysis"],
+    relatedInterests: ["Science", "Biology", "Chemistry", "Physics"],
+  },
+  {
+    name: "AI Researcher",
+    requiredSkills: ["Python", "Machine Learning", "Critical Thinking"],
+    relatedInterests: ["Artificial Intelligence", "Data Science", "Robotics"],
+  },
+  {
+    name: "Robotics Engineer",
+    requiredSkills: ["Python", "C++", "Electronics", "Problem Solving"],
+    relatedInterests: ["Robotics", "Engineering", "AI"],
   },
 ];
 
@@ -60,7 +120,8 @@ const skillOptions = [
   "Deep Learning", "UI Design", "UX Research", "Figma",
   "Photoshop", "Communication", "Leadership", "Teamwork",
   "Problem Solving", "Critical Thinking", "Cloud Computing",
-  "AWS", "Docker",
+  "AWS", "Docker", "Research", "Creativity", "Animation",
+  "Writing", "Chemistry", "Biology", "Electronics", "Illustrator", "Excel",
 ];
 
 const interestOptions = [
@@ -69,6 +130,8 @@ const interestOptions = [
   "Business", "Finance", "Marketing",
   "Healthcare", "Design", "Gaming",
   "Entrepreneurship", "Startups", "Robotics",
+  "Arts", "Literature", "Medicine", "Science", "Law", "Engineering",
+  "Entertainment", "Ethics", "Biology", "Chemistry", "Physics",
 ];
 
 export default function SkillQuiz() {
@@ -159,7 +222,7 @@ export default function SkillQuiz() {
     );
   }
 
-  // SKILLS PAGE
+  // SKILLS & INTERESTS PAGE
   if (step === questions.length) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200 p-6">
@@ -174,10 +237,10 @@ export default function SkillQuiz() {
                 <button
                   key={s}
                   onClick={() => toggleItem(s, skills, setSkills)}
-                  className={`px-3 py-1 rounded-full transition ${
+                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
                     skills.includes(s)
-                      ? "bg-purple-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-purple-300"
+                      ? "bg-purple-700 text-white"
+                      : "bg-gray-300 text-gray-700 hover:bg-purple-300"
                   }`}
                 >
                   {s}
@@ -206,10 +269,10 @@ export default function SkillQuiz() {
                 <button
                   key={i}
                   onClick={() => toggleItem(i, interests, setInterests)}
-                  className={`px-3 py-1 rounded-full transition ${
+                  className={`px-3 py-1 rounded-full transition cursor-pointer ${
                     interests.includes(i)
-                      ? "bg-blue-600 text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-blue-300"
+                      ? "bg-blue-700 text-white"
+                      : "bg-gray-300 text-gray-700 hover:bg-blue-300"
                   }`}
                 >
                   {i}
