@@ -1,12 +1,18 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Lightbulb, Rocket, Landmark, Trophy } from "lucide-react";
 
 export default function StartupIdeas() {
+  const [popupContent, setPopupContent] = useState<string | null>(null);
+
   const ideas = [
     "EdTech App",
     "AgriTech Platform",
     "Local Job Portal",
-    "E-commerce Startup",
+    "Healthcare App",
+    "AI Chatbot",
+    "E-commerce Solution",
+    "Travel Planner",
   ];
 
   const steps = [
@@ -30,97 +36,68 @@ export default function StartupIdeas() {
     "Online Coding Challenges",
   ];
 
-  return (
-    <div className="space-y-10">
+  const mainSections = [
+    { title: "Trending Ideas 💡", icon: <Lightbulb />, content: ideas },
+    { title: "How to Start 🚀", icon: <Rocket />, content: steps },
+    { title: "Govt Schemes 🏛", icon: <Landmark />, content: schemes },
+    { title: "Hackathons 🏆", icon: <Trophy />, content: hackathons },
+  ];
 
-      {/* 🔥 HERO */}
-      <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-8 rounded-3xl shadow-xl">
-        <h1 className="text-4xl font-bold mb-2">
-          Startup Ideas 💡
-        </h1>
-        <p className="text-white/80">
+  return (
+    <div className="space-y-10 p-6 max-w-6xl mx-auto">
+
+      {/* HERO */}
+      <div className="bg-gradient-to-r from-pink-500 to-purple-600 text-white p-8 rounded-3xl shadow-xl text-center">
+        <h1 className="text-4xl font-bold mb-2">Startup Ideas 💡</h1>
+        <p className="text-white/80 text-lg">
           Learn how to build your own startup step by step 🚀
         </p>
       </div>
 
-      {/* 💡 IDEA CARDS */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-          <Lightbulb /> Trending Startup Ideas
-        </h2>
+      {/* MAIN SECTIONS */}
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {mainSections.map((sec, i) => (
+          <motion.div
+            key={i}
+            whileHover={{ scale: 1.05 }}
+            className="p-6 bg-white rounded-3xl shadow-lg cursor-pointer hover:shadow-2xl transition flex flex-col items-center justify-center text-center"
+            onClick={() =>
+              setPopupContent(`${sec.title}\n\n${sec.content.join("\n")}`)
+            }
+          >
+            <div className="text-4xl mb-3">{sec.icon}</div>
+            <h3 className="font-semibold text-lg">{sec.title}</h3>
+            <p className="text-gray-500 text-sm mt-2">
+              Click to view details
+            </p>
+          </motion.div>
+        ))}
+      </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {ideas.map((idea, i) => (
-            <motion.div
-              key={i}
-              whileHover={{ scale: 1.05 }}
-              className="p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl shadow-lg"
+      {/* POPUP MODAL */}
+      {popupContent && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4"
+          onClick={() => setPopupContent(null)}
+        >
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            className="bg-white p-8 rounded-3xl shadow-xl max-w-lg w-full overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-2xl font-bold mb-4">Details</h2>
+            <pre className="text-gray-700 whitespace-pre-wrap">{popupContent}</pre>
+            <button
+              className="mt-6 w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-xl hover:opacity-90 transition"
+              onClick={() => setPopupContent(null)}
             >
-              {idea}
-            </motion.div>
-          ))}
+              Close
+            </button>
+          </motion.div>
         </div>
-      </div>
-
-      {/* 🚀 HOW TO START */}
-      <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Rocket /> How to Start a Startup
-        </h2>
-
-        <ul className="space-y-3 text-gray-600">
-          {steps.map((step, i) => (
-            <li key={i}>{step}</li>
-          ))}
-        </ul>
-      </div>
-
-      {/* ⚠️ RULES / THINGS TO KNOW */}
-      <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4">
-          ⚠️ Important Things to Know
-        </h2>
-
-        <ul className="space-y-3 text-gray-600">
-          <li>✔ Start small, don’t aim perfect at first</li>
-          <li>✔ Focus on solving real problems</li>
-          <li>✔ Learn basic business & marketing</li>
-          <li>✔ Failure is normal — keep improving</li>
-          <li>✔ Work in a team if possible</li>
-        </ul>
-      </div>
-
-      {/* 🏛 GOVERNMENT SCHEMES */}
-      <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Landmark /> Government Schemes (India 🇮🇳)
-        </h2>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          {schemes.map((s, i) => (
-            <div
-              key={i}
-              className="p-4 border rounded-xl hover:bg-purple-50 transition"
-            >
-              {s}
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* 🏆 HACKATHONS */}
-      <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-          <Trophy /> Hackathons & Opportunities
-        </h2>
-
-        <ul className="space-y-3 text-gray-600">
-          {hackathons.map((h, i) => (
-            <li key={i}>🔥 {h}</li>
-          ))}
-        </ul>
-      </div>
-
+      )}
     </div>
   );
 }
