@@ -36,12 +36,9 @@ export default function StartupIdeas() {
     "Online Coding Challenges",
   ];
 
-  const mainSections = [
-    { title: "Trending Ideas 💡", icon: <Lightbulb />, content: ideas },
-    { title: "How to Start 🚀", icon: <Rocket />, content: steps },
-    { title: "Govt Schemes 🏛", icon: <Landmark />, content: schemes },
-    { title: "Hackathons 🏆", icon: <Trophy />, content: hackathons },
-  ];
+  const openPopup = (title: string, content: string) => {
+    setPopupContent(`${title}\n\n${content}`);
+  };
 
   return (
     <div className="space-y-10 p-6 max-w-6xl mx-auto">
@@ -54,24 +51,99 @@ export default function StartupIdeas() {
         </p>
       </div>
 
-      {/* MAIN SECTIONS */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {mainSections.map((sec, i) => (
-          <motion.div
+      {/* 💡 TRENDING IDEAS */}
+      <div>
+        <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+          <Lightbulb /> Trending Startup Ideas
+        </h2>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {ideas.map((idea, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.05 }}
+              className="p-6 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-2xl shadow-lg cursor-pointer"
+              onClick={() => openPopup("Startup Idea", idea)}
+            >
+              {idea}
+            </motion.div>
+          ))}
+        </div>
+      </div>
+
+      {/* 🚀 HOW TO START */}
+      <div className="bg-white p-6 rounded-2xl shadow">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Rocket /> How to Start a Startup
+        </h2>
+        <ul className="space-y-3 text-gray-600">
+          {steps.map((step, i) => (
+            <li
+              key={i}
+              className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+              onClick={() => openPopup("Step to Start", step)}
+            >
+              {step}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* ⚠️ IMPORTANT THINGS */}
+      <div className="bg-white p-6 rounded-2xl shadow">
+        <h2 className="text-xl font-semibold mb-4">
+          ⚠️ Important Things to Know
+        </h2>
+        {[
+          "Start small, don’t aim perfect at first",
+          "Focus on solving real problems",
+          "Learn basic business & marketing",
+          "Failure is normal — keep improving",
+          "Work in a team if possible",
+        ].map((item, i) => (
+          <p
             key={i}
-            whileHover={{ scale: 1.05 }}
-            className="p-6 bg-white rounded-3xl shadow-lg cursor-pointer hover:shadow-2xl transition flex flex-col items-center justify-center text-center"
-            onClick={() =>
-              setPopupContent(`${sec.title}\n\n${sec.content.join("\n")}`)
-            }
+            className="cursor-pointer hover:bg-gray-100 p-2 rounded text-gray-600"
+            onClick={() => openPopup("Important Tip", item)}
           >
-            <div className="text-4xl mb-3">{sec.icon}</div>
-            <h3 className="font-semibold text-lg">{sec.title}</h3>
-            <p className="text-gray-500 text-sm mt-2">
-              Click to view details
-            </p>
-          </motion.div>
+            ✔ {item}
+          </p>
         ))}
+      </div>
+
+      {/* 🏛 GOVERNMENT SCHEMES */}
+      <div className="bg-white p-6 rounded-2xl shadow">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Landmark /> Government Schemes (India 🇮🇳)
+        </h2>
+        <div className="grid md:grid-cols-2 gap-4">
+          {schemes.map((s, i) => (
+            <div
+              key={i}
+              className="p-4 border rounded-xl hover:bg-purple-50 cursor-pointer transition"
+              onClick={() => openPopup("Govt Scheme", s)}
+            >
+              {s}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 🏆 HACKATHONS */}
+      <div className="bg-white p-6 rounded-2xl shadow">
+        <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+          <Trophy /> Hackathons & Opportunities
+        </h2>
+        <ul className="space-y-3 text-gray-600">
+          {hackathons.map((h, i) => (
+            <li
+              key={i}
+              className="cursor-pointer hover:bg-gray-100 p-2 rounded"
+              onClick={() => openPopup("Hackathon", h)}
+            >
+              🔥 {h}
+            </li>
+          ))}
+        </ul>
       </div>
 
       {/* POPUP MODAL */}
