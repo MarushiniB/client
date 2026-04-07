@@ -1,3 +1,4 @@
+// src/pages/Quiz.tsx
 import { useState, useEffect } from "react";
 import API from "../services/api";
 
@@ -9,6 +10,7 @@ type Scores = {
   science: number;
 };
 
+// Quiz Questions
 const questions = [
   { question: "Do you enjoy solving logical problems?", type: "engineering" },
   { question: "Are you interested in healthcare?", type: "medicine" },
@@ -20,8 +22,18 @@ const questions = [
   { question: "Do you like analyzing data?", type: "science" },
 ];
 
+// Skills & Interests options
 const skillOptions = ["Java", "Python", "Design", "Communication", "Leadership"];
 const interestOptions = ["AI", "Business", "Healthcare", "Design", "Finance"];
+
+// Example recommendation mapping
+const recommendedCourses: Record<string, string> = {
+  engineering: "B.Tech / Computer Science / IT",
+  medicine: "MBBS / Nursing / Pharmacy",
+  arts: "Fine Arts / Literature / Design",
+  commerce: "B.Com / Economics / Finance",
+  science: "B.Sc / Data Science / Research",
+};
 
 export default function Quiz() {
   const [step, setStep] = useState(0);
@@ -32,71 +44,76 @@ export default function Quiz() {
     commerce: 0,
     science: 0,
   });
-
   const [skills, setSkills] = useState<string[]>([]);
   const [interests, setInterests] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState("");
   const [customInterest, setCustomInterest] = useState("");
-  const [clickedAnswer, setClickedAnswer] = useState<"Yes" | "No" | null>(null);
 
-  // Handle Yes/No clicks
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+  // Increment score and move to next question
   const handleAnswer = (type: keyof Scores) => {
     setScores({ ...scores, [type]: scores[type] + 1 });
-    setClickedAnswer("Yes");
     setStep(step + 1);
   };
 
-  const handleNo = () => {
-    setClickedAnswer("No");
-    setStep(step + 1);
+  const toggleItem = (item: string, list: string[], setList: (v: string[]) => void) => {
+    if (list.includes(item)) {
+      setList(list.filter((i) => i !== item));
+    } else {
+      setList([...list, item]);
+    }
   };
 
-  const toggleItem = (item: string, list: string[], setList: any) => {
-    if (!item) return;
-    if (list.includes(item)) setList(list.filter((i) => i !== item));
-    else setList([...list, item]);
+  // Determine best stream
+  const getResult = () => {
+    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
   };
-
-  const getResult = () => Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
 
   const getCourseRecommendation = (stream: string) => {
-    const mapping: Record<string, string> = {
-      engineering: "B.Tech / Computer Science / Mechanical Engineering",
-      medicine: "MBBS / BDS / Nursing",
-      arts: "BA / Fine Arts / Design",
-      commerce: "B.Com / BBA / Finance",
-      science: "B.Sc / Biotechnology / Chemistry",
-    };
-    return mapping[stream] || "General Studies";
+    return recommendedCourses[stream] || "No recommendation";
   };
 
+  // Save skills & interests to backend & localStorage
   const saveProfile = async () => {
     try {
       await API.put("/auth/profile", { skills, interests });
       const oldUser = JSON.parse(localStorage.getItem("user") || "{}");
-      localStorage.setItem("user", JSON.stringify({ ...oldUser, skills, interests }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...oldUser, skills, interests })
+      );
     } catch (err) {
       console.error("Error saving profile", err);
     }
   };
 
-  // --------------- RESULT PAGE ----------------
+  // ✅ Call saveProfile when quiz is finished
+  useEffect(() => {
+    if (step > questions.length) {
+      saveProfile();
+    }
+  }, [step]);
+
+  // -----------------------
+  // RENDER
+  // -----------------------
+
+  // Result page
   if (step > questions.length) {
     const result = getResult();
     const recommendedCourse = getCourseRecommendation(result);
-
-    useEffect(() => {
-      saveProfile();
-    }, []);
 
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-blue-200 p-6">
         <div className="bg-white p-8 rounded-3xl shadow-xl max-w-2xl w-full space-y-6">
           <h1 className="text-3xl font-bold text-center">🎯 Your Career Path</h1>
+
           <p className="text-center text-xl">
             Best Stream:
             <span className="text-blue-600 font-bold ml-2 capitalize">{result}</span>
           </p>
+
           <p className="text-center text-lg text-purple-600">
             Recommended Course: {recommendedCourse}
           </p>
@@ -130,7 +147,7 @@ export default function Quiz() {
     );
   }
 
-  // --------------- QUESTIONS PAGE ----------------
+  // Questions page
   if (step < questions.length) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200">
@@ -144,14 +161,14 @@ export default function Quiz() {
           <div className="space-y-4">
             <button
               onClick={() => handleAnswer(questions[step].type as keyof Scores)}
-              className={`w-full p-4 rounded-xl ${clickedAnswer === "Yes" ? "bg-blue-700 text-white" : "bg-blue-500 text-white"}`}
+              className="w-full p-4 bg-blue-500 text-white rounded-xl"
             >
               Yes
             </button>
 
             <button
-              onClick={handleNo}
-              className={`w-full p-4 rounded-xl ${clickedAnswer === "No" ? "bg-gray-400 text-white" : "bg-gray-200"}`}
+              onClick={() => setStep(step + 1)}
+              className="w-full p-4 bg-gray-200 rounded-xl"
             >
               No
             </button>
@@ -161,13 +178,13 @@ export default function Quiz() {
     );
   }
 
-  // --------------- SKILLS + INTERESTS PAGE ----------------
+  // Skills + Interests page
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-100 to-blue-200 p-6">
       <div className="bg-white p-8 rounded-3xl shadow-xl max-w-xl w-full space-y-6">
         <h1 className="text-2xl font-bold text-center">🎯 Final Step</h1>
 
-        {/* SKILLS */}
+        {/* Skills */}
         <div>
           <h2 className="font-semibold mb-2">Select Skills</h2>
           <div className="flex flex-wrap gap-2">
@@ -175,26 +192,24 @@ export default function Quiz() {
               <button
                 key={s}
                 onClick={() => toggleItem(s, skills, setSkills)}
-                className={`px-3 py-1 rounded-full ${skills.includes(s) ? "bg-blue-500 text-white" : "bg-gray-200"}`}
+                className={`px-3 py-1 rounded-full ${
+                  skills.includes(s) ? "bg-blue-500 text-white" : "bg-gray-200"
+                }`}
               >
                 {s}
               </button>
             ))}
           </div>
-
           <input
             value={customSkill}
             onChange={(e) => setCustomSkill(e.target.value)}
             placeholder="Add custom skill"
             className="mt-2 w-full p-2 border rounded"
           />
-
           <button
             onClick={() => {
-              if (customSkill) {
-                setSkills([...skills, customSkill]);
-                setCustomSkill("");
-              }
+              if (customSkill.trim() !== "") setSkills([...skills, customSkill.trim()]);
+              setCustomSkill("");
             }}
             className="mt-2 text-sm text-blue-500"
           >
@@ -202,7 +217,7 @@ export default function Quiz() {
           </button>
         </div>
 
-        {/* INTERESTS */}
+        {/* Interests */}
         <div>
           <h2 className="font-semibold mb-2">Select Interests</h2>
           <div className="flex flex-wrap gap-2">
@@ -210,26 +225,25 @@ export default function Quiz() {
               <button
                 key={s}
                 onClick={() => toggleItem(s, interests, setInterests)}
-                className={`px-3 py-1 rounded-full ${interests.includes(s) ? "bg-green-500 text-white" : "bg-gray-200"}`}
+                className={`px-3 py-1 rounded-full ${
+                  interests.includes(s) ? "bg-green-500 text-white" : "bg-gray-200"
+                }`}
               >
                 {s}
               </button>
             ))}
           </div>
-
           <input
             value={customInterest}
             onChange={(e) => setCustomInterest(e.target.value)}
             placeholder="Add custom interest"
             className="mt-2 w-full p-2 border rounded"
           />
-
           <button
             onClick={() => {
-              if (customInterest) {
-                setInterests([...interests, customInterest]);
-                setCustomInterest("");
-              }
+              if (customInterest.trim() !== "")
+                setInterests([...interests, customInterest.trim()]);
+              setCustomInterest("");
             }}
             className="mt-2 text-sm text-green-500"
           >
