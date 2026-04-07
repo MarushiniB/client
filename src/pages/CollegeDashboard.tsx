@@ -5,19 +5,30 @@ import {
   TrendingUp,
   BookOpen,
   Award,
-  // BarChart3,
   Target,
+  User,
+  LogOut,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function CollegeDashboard() {
   const navigate = useNavigate();
-
   const user = JSON.parse(localStorage.getItem("user") || "null");
-
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [showProfile, setShowProfile] = useState(false);
 
+  const skills = user?.skills || ["React", "Python"];
+  const interests = user?.interests || ["AI", "Finance"];
+
+  // 🔥 LOGOUT
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
+  // 🚀 NAVIGATION HANDLER
   const handleNavigate = (title: string) => {
     if (title === "Upload Resume") navigate("/resume");
     if (title === "Skill Analysis") navigate("/skill-quiz");
@@ -32,29 +43,54 @@ export default function CollegeDashboard() {
     { title: "Startup Ideas", icon: <BookOpen />, color: "from-blue-400 to-purple-600" },
   ];
 
-  const skills = user?.skills || ["React", "Python"];
-  const interests = user?.interests || ["AI", "Finance"];
-
   return (
     <div className="space-y-10">
 
-      {/* 🔥 HERO */}
-      <div className="bg-gradient-to-r from-purple-600 to-blue-600 text-white p-8 rounded-3xl shadow-xl">
-        <h1 className="text-4xl font-bold mb-2">
-          Welcome {user?.name || "Student"} 🎓
-        </h1>
-        <p className="text-white/80">
-          Upgrade your skills, explore jobs & build your future 🚀
-        </p>
+      {/* 🔥 HERO + PROFILE */}
+      <div className="relative rounded-3xl p-8 bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-xl">
+        <div className="relative z-10 flex justify-between items-center flex-wrap gap-6">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">
+              Welcome {user?.name || "Student"} 🎓
+            </h1>
+            <p className="text-white/80">
+              Upgrade your skills, explore jobs & build your future 🚀
+            </p>
+          </div>
+
+          {/* PROFILE DROPDOWN */}
+          <div className="relative">
+            <div
+              onClick={() => setShowProfile(!showProfile)}
+              className="flex items-center gap-3 bg-white/20 px-4 py-2 rounded-xl cursor-pointer"
+            >
+              <User />
+              <span className="font-semibold">{user?.name || "Profile"}</span>
+            </div>
+
+            {showProfile && (
+              <div className="absolute right-0 mt-2 bg-white text-black rounded-xl shadow-lg p-4 w-64 z-50">
+                <p className="font-semibold">{user?.name}</p>
+                <p className="text-sm text-gray-500">{user?.email}</p>
+                <p className="text-xs mt-1 capitalize">{user?.role}</p>
+
+                <button
+                  onClick={handleLogout}
+                  className="mt-3 flex items-center gap-2 text-red-500 hover:text-red-600"
+                >
+                  <LogOut size={16} /> Logout
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* 📊 STATS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {[
-          { label: "Skills", value: skills.length, icon: <Award />, key: "skills" },
+          { label: "Skills Learned", value: skills.length, icon: <Award />, key: "skills" },
           { label: "Interests", value: interests.length, icon: <Target />, key: "interests" },
-          // { label: "Jobs Applied", value: "5", icon: <TrendingUp />, key: "jobs" },
-          // { label: "Progress", value: "65%", icon: <BarChart3 />, key: "progress" },
         ].map((stat, i) => (
           <motion.div
             key={i}
@@ -76,7 +112,6 @@ export default function CollegeDashboard() {
       {/* 🚀 QUICK ACTIONS */}
       <div>
         <h2 className="text-2xl font-semibold mb-4">Quick Actions</h2>
-
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {actions.map((card) => (
             <motion.div
@@ -94,10 +129,7 @@ export default function CollegeDashboard() {
 
       {/* 💡 SKILLS SECTION */}
       <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4">
-          🚀 Skills You Can Learn
-        </h2>
-
+        <h2 className="text-xl font-semibold mb-4">🚀 Skills You Can Learn</h2>
         <div className="flex flex-wrap gap-2">
           {[
             "Python",
@@ -109,10 +141,7 @@ export default function CollegeDashboard() {
             "Excel",
             "Data Analysis",
           ].map((skill, i) => (
-            <span
-              key={i}
-              className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full"
-            >
+            <span key={i} className="px-3 py-1 bg-purple-100 text-purple-600 rounded-full">
               {skill}
             </span>
           ))}
@@ -121,21 +150,10 @@ export default function CollegeDashboard() {
 
       {/* 💼 JOB ROLES */}
       <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4">
-          💼 Popular Job Roles
-        </h2>
-
+        <h2 className="text-xl font-semibold mb-4">💼 Popular Job Roles</h2>
         <div className="grid md:grid-cols-3 gap-4">
-          {[
-            "Data Scientist",
-            "Web Developer",
-            "AI Engineer",
-            "Business Analyst",
-          ].map((job, i) => (
-            <div
-              key={i}
-              className="p-4 border rounded-xl hover:bg-purple-50 transition"
-            >
+          {["Data Scientist", "Web Developer", "AI Engineer", "Business Analyst"].map((job, i) => (
+            <div key={i} className="p-4 border rounded-xl hover:bg-purple-50 transition">
               {job}
             </div>
           ))}
@@ -144,10 +162,7 @@ export default function CollegeDashboard() {
 
       {/* 🚀 ENTREPRENEUR */}
       <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4">
-          🚀 Entrepreneurship
-        </h2>
-
+        <h2 className="text-xl font-semibold mb-4">🚀 Entrepreneurship</h2>
         <ul className="space-y-2 text-gray-600">
           <li>✔ Smart India Hackathon</li>
           <li>✔ Startup India</li>
@@ -157,10 +172,7 @@ export default function CollegeDashboard() {
 
       {/* 📘 EXAMS */}
       <div className="bg-white p-6 rounded-2xl shadow">
-        <h2 className="text-xl font-semibold mb-4">
-          📘 Exams & Opportunities
-        </h2>
-
+        <h2 className="text-xl font-semibold mb-4">📘 Exams & Opportunities</h2>
         <ul className="space-y-2 text-gray-600">
           <li>✔ TCS NQT</li>
           <li>✔ Infosys Certification</li>
@@ -178,10 +190,7 @@ export default function CollegeDashboard() {
             >
               ✖
             </button>
-
-            <h2 className="text-xl font-bold mb-4 capitalize">
-              {activeModal}
-            </h2>
+            <h2 className="text-xl font-bold mb-4 capitalize">{activeModal}</h2>
 
             {activeModal === "skills" && (
               <div className="flex flex-wrap gap-2">
@@ -192,7 +201,6 @@ export default function CollegeDashboard() {
                 ))}
               </div>
             )}
-
             {activeModal === "interests" && (
               <div className="flex flex-wrap gap-2">
                 {interests.map((s: string, i: number) => (
@@ -202,13 +210,9 @@ export default function CollegeDashboard() {
                 ))}
               </div>
             )}
-
-            {activeModal === "jobs" && <p>Applied to 5 jobs 🚀</p>}
-            {activeModal === "progress" && <p>You are 65% career ready 🎯</p>}
           </div>
         </div>
       )}
-
     </div>
   );
 }
