@@ -26,7 +26,7 @@ const questions = [
 const skillOptions = ["Java", "Python", "Design", "Communication", "Leadership"];
 const interestOptions = ["AI", "Business", "Healthcare", "Design", "Finance"];
 
-// Example recommendation mapping
+// Recommendation mapping
 const recommendedCourses: Record<string, string> = {
   engineering: "B.Tech / Computer Science / IT",
   medicine: "MBBS / Nursing / Pharmacy",
@@ -48,8 +48,6 @@ export default function Quiz() {
   const [interests, setInterests] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState("");
   const [customInterest, setCustomInterest] = useState("");
-
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   // Increment score and move to next question
   const handleAnswer = (type: keyof Scores) => {
@@ -88,7 +86,7 @@ export default function Quiz() {
     }
   };
 
-  // ✅ Call saveProfile when quiz is finished
+  // Call saveProfile when quiz is finished
   useEffect(() => {
     if (step > questions.length) {
       saveProfile();
